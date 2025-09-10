@@ -79,6 +79,8 @@ function Dashboard() {
   const userStats = mockStats[user?.role as keyof typeof mockStats]
 
   return (
+    <>
+    
     <div className="min-h-screen bg-background">
       <Header />
       <main className="p-6">
@@ -183,11 +185,13 @@ function Dashboard() {
         </div>
       </main>
     </div>
+  </>
   )
 }
 
 function App() {
   return (
+
     <AuthProvider>
       <AppContent />
     </AuthProvider>
