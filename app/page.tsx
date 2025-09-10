@@ -1,6 +1,5 @@
 "use client"
-
-import { AuthProvider, useAuth } from "@/components/auth/auth-provider"
+import { useAuth } from "@/components/auth/auth-provider"
 import { LoginForm } from "@/components/auth/login-form"
 import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -208,4 +207,6 @@ function AppContent() {
   return <Dashboard />
 }
 
-export default App
+export default function CabPage() {
+  return <App />
+}
