@@ -1,4 +1,5 @@
 "use client"
+
 import { useAuth } from "@/components/auth/auth-provider"
 import { LoginForm } from "@/components/auth/login-form"
 import { Header } from "@/components/layout/header"
@@ -37,12 +38,7 @@ function Dashboard() {
         { icon: Activity, label: "Quality Metrics", description: "View testing statistics", href: "/metrics" },
       ],
       "project-manager": [
-        {
-          icon: Activity,
-          label: "Project Overview",
-          description: "Monitor all active deployments",
-          href: "/notifications",
-        },
+        { icon: Activity, label: "Project Overview", description: "Monitor all active deployments", href: "/notifications" },
         { icon: Bell, label: "Notifications", description: "Manage system notifications", href: "/notifications" },
       ],
       "it-security": [
@@ -51,12 +47,7 @@ function Dashboard() {
       ],
       cab: [
         { icon: CheckCircle, label: "Review Requests", description: "Approve deployment requests", href: "/cab" },
-        {
-          icon: Bell,
-          label: "CAB Notifications",
-          description: "Review approval notifications",
-          href: "/notifications",
-        },
+        { icon: Bell, label: "CAB Notifications", description: "Review approval notifications", href: "/notifications" },
       ],
       support: [
         { icon: Rocket, label: "Deploy Builds", description: "Execute approved deployments", href: "/deploy" },
@@ -78,122 +69,110 @@ function Dashboard() {
   const userStats = mockStats[user?.role as keyof typeof mockStats]
 
   return (
-    <>
-    
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Welcome Section */}
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold text-balance">Welcome back, {user?.name}</h2>
-            <p className="text-muted-foreground text-pretty">{getWelcomeMessage()}</p>
-          </div>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="p-6">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {/* Welcome Section */}
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold text-balance">Welcome back, {user?.name}</h2>
+              <p className="text-muted-foreground text-pretty">{getWelcomeMessage()}</p>
+            </div>
 
-          <MetricsOverview />
+            <MetricsOverview />
 
-          {/* Role-specific Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {Object.entries(userStats || {}).map(([key, value]) => (
-              <Card key={key}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium capitalize text-muted-foreground">
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </CardTitle>
+            {/* Role-specific Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {Object.entries(userStats || {}).map(([key, value]) => (
+                  <Card key={key}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium capitalize text-muted-foreground">
+                        {key.replace(/([A-Z])/g, " $1").trim()}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{value}</div>
+                    </CardContent>
+                  </Card>
+              ))}
+            </div>
+
+            <WorkflowPipeline />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                  <CardDescription>Common tasks for your role</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{value}</div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {getRoleActions().map((action, index) => (
+                        <Button key={index} variant="outline" className="h-auto p-4 justify-start bg-transparent" asChild>
+                          <Link href={action.href || "#"}>
+                            <action.icon className="mr-3 h-5 w-5" />
+                            <div className="text-left">
+                              <div className="font-medium">{action.label}</div>
+                              <div className="text-sm text-muted-foreground">{action.description}</div>
+                            </div>
+                          </Link>
+                        </Button>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
 
-          <WorkflowPipeline />
+              <NotificationsPanel />
+            </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Quick Actions */}
+            {/* Recent Activity */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Common tasks for your role</CardDescription>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>Latest updates in your workflow</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 gap-3">
-                  {getRoleActions().map((action, index) => (
-                    <Button key={index} variant="outline" className="h-auto p-4 justify-start bg-transparent" asChild>
-                      <Link href={action.href || "#"}>
-                        <action.icon className="mr-3 h-5 w-5" />
-                        <div className="text-left">
-                          <div className="font-medium">{action.label}</div>
-                          <div className="text-sm text-muted-foreground">{action.description}</div>
-                        </div>
-                      </Link>
-                    </Button>
-                  ))}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    <div className="flex-1">
+                      <p className="text-sm">Security scan completed for Project Alpha</p>
+                      <p className="text-xs text-muted-foreground">2 hours ago</p>
+                    </div>
+                    <Badge variant="secondary">
+                      <CheckCircle className="mr-1 h-3 w-3" />
+                      Clean
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-orange-500"></div>
+                    <div className="flex-1">
+                      <p className="text-sm">CAB approval pending for Project Beta</p>
+                      <p className="text-xs text-muted-foreground">4 hours ago</p>
+                    </div>
+                    <Badge variant="outline">
+                      <Clock className="mr-1 h-3 w-3" />
+                      Pending
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div className="flex-1">
+                      <p className="text-sm">Deployment successful for Project Gamma</p>
+                      <p className="text-xs text-muted-foreground">1 day ago</p>
+                    </div>
+                    <Badge variant="secondary">
+                      <Rocket className="mr-1 h-3 w-3" />
+                      Deployed
+                    </Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-
-            <NotificationsPanel />
           </div>
-
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest updates in your workflow</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-primary"></div>
-                  <div className="flex-1">
-                    <p className="text-sm">Security scan completed for Project Alpha</p>
-                    <p className="text-xs text-muted-foreground">2 hours ago</p>
-                  </div>
-                  <Badge variant="secondary">
-                    <CheckCircle className="mr-1 h-3 w-3" />
-                    Clean
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-orange-500"></div>
-                  <div className="flex-1">
-                    <p className="text-sm">CAB approval pending for Project Beta</p>
-                    <p className="text-xs text-muted-foreground">4 hours ago</p>
-                  </div>
-                  <Badge variant="outline">
-                    <Clock className="mr-1 h-3 w-3" />
-                    Pending
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <div className="flex-1">
-                    <p className="text-sm">Deployment successful for Project Gamma</p>
-                    <p className="text-xs text-muted-foreground">1 day ago</p>
-                  </div>
-                  <Badge variant="secondary">
-                    <Rocket className="mr-1 h-3 w-3" />
-                    Deployed
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-    </div>
-  </>
-  )
-}
-
-function App() {
-  return (
-
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+        </main>
+      </div>
   )
 }
 
@@ -208,5 +187,5 @@ function AppContent() {
 }
 
 export default function CabPage() {
-  return <App />
+  return <AppContent />
 }
