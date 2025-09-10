@@ -1,17 +1,21 @@
-"use client"
+import type { Metadata } from "next"
+import "./globals.css"
+import { Providers } from "./providers" // 👈 client wrapper
 
-import { AuthProvider } from "@/components/auth/auth-provider"
-import { Header } from "@/components/layout/header"
+export const metadata: Metadata = {
+    title: "My App",
+    description: "Next.js App with Auth",
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
         <body>
-        <AuthProvider>
-            <Header />
+        <Providers>
             {children}
-        </AuthProvider>
+        </Providers>
         </body>
         </html>
     )
 }
+
